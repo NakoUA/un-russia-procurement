@@ -1,6 +1,12 @@
 # Notice — parts of this repository with other terms
 
-The MIT licence in `LICENSE` covers the code. Everything below carries different terms.
+This repository is mixed. The MIT licence in `LICENSE` covers **only the code** — the HTML, CSS and JavaScript of `index.html`. Everything below carries different terms:
+
+| What | Terms |
+| --- | --- |
+| Data (`data/`) | CC BY 4.0 — see `LICENSE-data.md` |
+| Written text (README, the prose on the page) | all rights reserved — below |
+| Fonts (`fonts/`) | IBM Plex, SIL Open Font License 1.1 — below |
 
 ## Written text — all rights reserved
 
