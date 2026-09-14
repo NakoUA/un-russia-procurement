@@ -1,0 +1,3 @@
+# The published dataset is kept byte for byte: git must not rewrite line endings,
+# or the file stops matching its own sha256 fingerprint.
+*.csv -text

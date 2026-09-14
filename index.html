@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="fonts/plex.css">
+  <title>UN procurement from Russian suppliers, 2015–2025</title>
+  <meta name="description" content="What UN agencies contracted with suppliers registered in the Russian Federation, 2015–2025: charts built from the UN's own supplier-level data, with the dataset published alongside.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="UN procurement from Russian suppliers, 2015–2025">
+  <meta property="og:description" content="$2.57 billion over eleven years, from the UN's own supplier-level data. Charts, the numbers behind them, and the dataset to download.">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --surface-note: #F3F4F6;
+      --text-neutral: #374151;
+      --text-secondary: #6B7280;
+      --rule: #9CA3AF;
+      --grid: #E5E7EB;
+      --brand-dark: #1E283A;
+      --accent: #DC2626;
+      --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg); color: var(--text-neutral);
+      font-family: var(--sans); font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--brand-dark); }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    .skip {
+      position: absolute; left: -9999px; top: 0; background: var(--brand-dark); color: #fff;
+      padding: 8px 14px; font-size: 14px; z-index: 20;
+    }
+    .skip:focus { left: 8px; top: 8px; }
+
+    /* site header */
+    .site { padding: 40px 0 28px; border-bottom: 1px solid var(--grid); }
+    .site__kicker {
+      font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;
+    }
+    .site h1 {
+      font-size: 30px; line-height: 1.22; font-weight: 600;
+      color: var(--brand-dark); letter-spacing: -.01em; margin-bottom: 14px;
+    }
+    .site__lede { font-size: 17px; max-width: 68ch; }
+    .site__lede + .site__lede { margin-top: 12px; }
+    .site__lede b { color: var(--brand-dark); font-weight: 600; }
+    .site__meta {
+      margin-top: 18px; font-family: var(--mono); font-size: 12.5px; line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .site__meta a { color: var(--brand-dark); }
+
+    /* article part */
+    .part { padding: 40px 0 8px; }
+    .part + .part { border-top: 1px solid var(--grid); }
+    .part__kicker {
+      display: inline-block; margin-bottom: 12px; padding: 5px 11px;
+      background: var(--accent); color: #FFFFFF;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .part h2 {
+      font-size: 24px; line-height: 1.25; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .035em;
+      color: var(--brand-dark); margin-bottom: 14px;
+    }
+    .part__lede { font-size: 16.5px; max-width: 68ch; }
+    .part__lede + .part__lede { margin-top: 12px; }
+    .part__lede b { color: var(--brand-dark); font-weight: 600; }
+
+    /* figures */
+    .fig { margin: 40px 0 0; padding-top: 28px; border-top: 1px solid var(--grid); }
+    .fig__kicker {
+      font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px;
+    }
+    .fig__title {
+      font-size: 20px; line-height: 1.3; font-weight: 600;
+      color: var(--brand-dark); margin-bottom: 10px;
+    }
+    .fig__lede { font-size: 15.5px; max-width: 68ch; margin-bottom: 18px; }
+    .fig__lede b { color: var(--brand-dark); font-weight: 600; }
+
+    /* Marks a panel that is not in the downloadable file. */
+    .badge {
+      display: inline-block; margin-bottom: 16px; padding: 5px 11px;
+      border: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--text-neutral);
+      background: var(--surface-note);
+    }
+    .badge b { color: var(--brand-dark); }
+
+    .fig__legend {
+      display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center;
+      margin-bottom: 12px; font-size: 13px;
+    }
+    .lg { display: inline-flex; align-items: center; gap: 8px; }
+    .lg svg { flex: none; display: block; }
+    .lg b { font-family: var(--mono); font-weight: 600; color: var(--brand-dark); }
+
+    .fig__plot { position: relative; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+    .fig__plot svg.chart { display: block; width: 100%; min-width: 600px; height: auto; }
+    /* Shown only when the chart is really wider than the viewport;
+       the class is set by script after measuring. */
+    .scrollhint {
+      display: none; margin-top: 6px; font-family: var(--mono); font-size: 11.5px;
+      color: var(--text-secondary); letter-spacing: .02em;
+    }
+    .scrollhint[data-show="1"] { display: block; }
+
+    .ax { font-family: var(--mono); font-size: 11px; fill: var(--text-secondary); }
+    .ax-unit { font-family: var(--mono); font-size: 10px; fill: var(--rule); letter-spacing: .06em; }
+    .panel {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+      text-transform: uppercase; fill: var(--text-secondary);
+    }
+    .serieslabel { font-size: 12.5px; font-weight: 600; }
+    .serieslabel.sm { font-size: 10.5px; }
+    /* White halo keeps labels readable over a line without breaking it. */
+    .serieslabel, .valuelabel, .barname { paint-order: stroke; stroke: #FFFFFF; stroke-width: 3px; stroke-linejoin: round; }
+    .note { font-size: 11.5px; fill: var(--accent); font-weight: 600; }
+    .note-soft { font-family: var(--mono); font-size: 10.5px; fill: var(--text-secondary); }
+    .valuelabel { font-family: var(--mono); font-size: 11px; }
+    .barname { font-size: 14px; font-weight: 600; fill: var(--brand-dark); }
+    .barwhat { font-size: 11.5px; fill: var(--text-secondary); }
+    .barval { font-family: var(--mono); font-size: 13px; font-weight: 600; fill: var(--brand-dark); }
+
+    .hit { fill: transparent; cursor: crosshair; }
+    .hit:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    .tip {
+    /* top/left are set upfront: otherwise the hidden tooltip sits in flow,
+       adds height, and the browser draws a stray scrollbar. */
+      position: absolute; top: 0; left: 0;
+      pointer-events: none; opacity: 0; transition: opacity 120ms ease-out;
+      background: var(--bg); border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+      box-shadow: 0 8px 16px -2px rgba(0, 0, 0, .18); padding: 8px 12px; min-width: 224px; z-index: 5;
+    }
+    .tip[data-open="1"] { opacity: 1; }
+    .tip__y { font-family: var(--mono); font-size: 12px; color: var(--brand-dark); font-weight: 600; margin-bottom: 4px; }
+    .tip__r { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; align-items: baseline; }
+    .tip__r i { flex: none; width: 12px; height: 3px; display: inline-block; margin-right: 6px; vertical-align: middle; }
+    .tip__r span:last-child { font-family: var(--mono); color: var(--brand-dark); }
+    .tip__d { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--grid); font-size: 11px; color: var(--text-secondary); }
+    .tip__lead { color: var(--accent); font-weight: 600; }
+
+    .caveat {
+      margin-top: 20px; background: var(--surface-note);
+      padding: 12px 16px; font-size: 13.5px; line-height: 1.65;
+    }
+    .caveat p + p { margin-top: 8px; }
+    .caveat b { color: var(--brand-dark); }
+
+    .src { margin-top: 16px; font-size: 12.5px; line-height: 1.65; color: var(--text-secondary); }
+    .src code { font-family: var(--mono); font-size: 11.5px; }
+    .src a { color: var(--text-neutral); }
+
+    details.data { margin-top: 14px; border-top: 1px solid var(--grid); padding-top: 12px; }
+    details.data summary { cursor: pointer; font-size: 13.5px; font-weight: 600; list-style: none; color: var(--brand-dark); }
+    details.data summary::-webkit-details-marker { display: none; }
+    details.data summary::before { content: '\25B8  '; color: var(--rule); }
+    details.data[open] summary::before { content: '\25BE  '; }
+    .tblwrap { overflow-x: auto; margin-top: 12px; }
+    table { border-collapse: collapse; font-size: 12px; width: 100%; }
+    th, td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+    tbody td { font-family: var(--mono); }
+    tbody td:first-child { font-family: var(--sans); }
+    tfoot td { font-family: var(--mono); font-weight: 600; color: var(--brand-dark); border-top: 1px solid var(--rule); border-bottom: none; }
+    .tblnote { font-size: 11.5px; line-height: 1.6; color: var(--text-secondary); margin-top: 10px; }
+
+    /* dataset */
+    .dataset { margin-top: 48px; padding: 32px 0 8px; border-top: 2px solid var(--brand-dark); }
+    .dataset h2 { font-size: 22px; font-weight: 600; color: var(--brand-dark); margin-bottom: 12px; }
+    .dataset p { max-width: 68ch; }
+    .dataset p + p { margin-top: 12px; }
+    .btn, .btn-ghost {
+      display: inline-block; margin-top: 20px; padding: 12px 20px;
+      background: transparent; color: var(--brand-dark); border: 1px solid var(--brand-dark);
+      text-decoration: none; font-family: var(--sans); font-size: 15px; font-weight: 600; letter-spacing: 0;
+    }
+    .btn:hover, .btn:focus, .btn-ghost:hover, .btn-ghost:focus { background: var(--brand-dark); color: #FFFFFF; }
+    .btn span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--text-secondary); }
+    .btn:hover span, .btn:focus span { color: #FFFFFF; opacity: .75; }
+    .dataset__acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .dataset__acts .btn, .dataset__acts .btn-ghost { margin-top: 0; }
+
+    .explore { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--grid); }
+    .explore p { font-size: 13px; line-height: 1.65; color: var(--text-secondary); max-width: 68ch; }
+    .explore p + p { margin-top: 10px; }
+    .explore b { color: var(--brand-dark); }
+    .made { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--grid); }
+    .made p { max-width: 68ch; }
+    .made b { color: var(--brand-dark); }
+
+
+    /* disclosure blocks */
+    .drawers { margin-top: 30px; }
+    .drawer {
+      background: var(--surface-note);
+      border: 1px solid var(--grid);
+      border-radius: 6px;
+      padding: 0 18px;
+    }
+    .drawer + .drawer { margin-top: 8px; }
+    .drawer > summary {
+      list-style: none; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0;
+      font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--brand-dark);
+    }
+    .drawer > summary::-webkit-details-marker { display: none; }
+    .drawer > summary::before {
+      content: ''; flex: none;
+      width: 0; height: 0; border-style: solid;
+      border-width: 5px 0 5px 8px;
+      border-color: transparent transparent transparent var(--rule);
+      transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .drawer[open] > summary::before { transform: rotate(90deg); border-left-color: var(--brand-dark); }
+    .drawer > summary:hover::before { border-left-color: var(--brand-dark); }
+    .drawer > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .drawer__icon { flex: none; width: 19px; height: 19px; color: var(--text-secondary); }
+    .drawer[open] .drawer__icon, .drawer > summary:hover .drawer__icon { color: var(--brand-dark); }
+    .drawer__body { padding: 0 0 18px; font-size: 14.5px; line-height: 1.7; }
+    .drawer__body p { max-width: 68ch; }
+    .drawer__body p + p { margin-top: 12px; }
+    .drawer__body b { color: var(--brand-dark); }
+    .drawer__body details.data { margin-top: 16px; margin-bottom: 4px; }
+
+    /* footer */
+    .site-foot {
+      margin-top: 48px; padding: 20px 0 48px; border-top: 1px solid var(--grid);
+      font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--rule);
+    }
+    .site-foot a { color: var(--text-secondary); }
+    .site-foot__row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 18px;
+    }
+    .site-foot__note { max-width: 68ch; }
+    .social { display: flex; align-items: center; gap: 10px; flex: none; }
+    .social a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; color: var(--text-secondary);
+    }
+    .social a:hover, .social a:focus-visible { color: var(--brand-dark); }
+    .social a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .social svg { width: 19px; height: 19px; fill: currentColor; display: block; }
+
+    @media (max-width: 560px) {
+      .site h1 { font-size: 24px; }
+      .part h2 { font-size: 20px; }
+      .fig__title { font-size: 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
+    @media print {
+      .tip { display: none; }
+      details.data[open] { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#part-1">Skip to the charts</a>
+
+  <header class="site">
+    <div class="wrap">
+      <h1>UN procurement from Russian suppliers, 2015–2025</h1>
+      <p class="site__lede">Over 11 years, UN agencies paid at least <b>$2.57 billion</b> to suppliers registered in
+        the Russian Federation. This page shows what that money bought, who paid it and how it moved year by year, and
+        publishes the records underneath, so the charts can be rebuilt.</p>
+      <p class="site__lede">What this page adds is a shape you can read and a file you can download. Every chart
+        carries its limits directly beneath it, and every number in it opens as a table.</p>
+      <p class="site__meta">Source:
+        <a href="https://www.ungm.org/Shared/KnowledgeCenter/Pages/asr_data_supplier" target="_blank"
+          rel="noopener">UN Annual Statistical Report on procurement</a>, supplier-level data, taken
+        20 July 2026 and re-checked 12 September 2026 · <a href="#dataset">The dataset and how to check it ↓</a></p>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Part 1 -->
+    <section class="part" id="part-1">
+      <p class="part__kicker">Part 1 of 4</p>
+      <h2>The big picture</h2>
+      <p class="part__lede">That $2.57 billion is what the UN's own supplier-level data shows for large contracts,
+        at or above $30,000. Smaller purchases are not published, so the real figure is higher. It is also
+        <b>contract value, not money spent</b>: the UN reports these figures by contract amount, because many of its
+        organizations cannot report actual expenditure (<a href="https://www.ungm.org/Shared/KnowledgeCenter/Pages/asr_about"
+          target="_blank" rel="noopener">the UN's own explanation of this data</a>).</p>
+
+      <p class="part__lede"><b>What this data cannot say is why.</b> The UN publishes who won a contract. It does not
+        publish who competed for it — the bidders appear in this record no more than in any other it makes public. So
+        nothing on this page can tell you whether Russian suppliers stopped bidding, whether their competitors grew
+        stronger, whether UN organizations decided to buy elsewhere, or whether some mix of the three was at work. The
+        figures show what happened, in what order and to whom. Why it happened is a separate inquiry, and it would have
+        to be built on sources other than this dataset.</p>
+
+      <p class="part__lede">Three things stand out.</p>
+
+      <!-- Figure 1 -->
+      <figure class="fig" id="fig-1">
+        <figcaption>
+          <p class="fig__kicker">Figure 1 · money and share</p>
+          <h3 class="fig__title">The money was shrinking well before the full-scale invasion of Ukraine</h3>
+          <p class="fig__lede">In 2015, the first year in the data, payments were <b>$367 million</b>. They fell in eight
+            of the next ten years. In 2023, the first full year of the war in Ukraine, they dropped to <b>$75 million</b>. By 2025
+            they were <b>75% below 2015</b>. And the share fell further than the money did,
+            because the UN was buying more overall: Russia-registered suppliers took 2.3% of all large UN contracts in
+            2015 and <b>0.5%</b> in 2025. This is not a shrinking UN. It is a UN buying elsewhere.</p>
+          <p class="badge"><b>Lower panel not in the downloadable file.</b> Russia's share and the 29% note are
+            measured against all UN procurement — the full dataset, which is not published here. The upper panel is in
+            the file and can be rebuilt from it.</p>
+        </figcaption>
+
+        <div class="fig__plot">
+          <svg class="chart" viewBox="0 0 900 520" role="img" aria-labelledby="t1 d1" id="svg1">
+            <title id="t1">Contract value between UN agencies and Russia-registered suppliers, 2015–2025, and Russia's share of all
+              large UN contracts</title>
+            <desc id="d1">Upper panel, columns: 367 million dollars in 2015, falling through 204 million in 2022 to
+              75 million in 2023, then 103 million in 2024 and 93 million in 2025. Lower panel, a line: Russia's
+              share of all large UN contracts falls from 2.3 per cent in 2015 to 0.5 per cent in 2024 and stays there in
+              2025. Annotation: total UN procurement grew 29 per cent from 2015 to 2025. Exact figures are in the data
+              table below the chart.</desc>
+          </svg>
+          <div class="tip" id="tip1" role="tooltip" aria-hidden="true"></div>
+        </div>
+        <p class="scrollhint">↔ the chart is wider than your screen — drag it sideways, or open the data table below</p>
+
+        <div class="caveat">
+          <p><b>Two different measures sit in the two panels.</b> The share is Russia against all large contracts in
+            the supplier-level data. The 29% growth is the UN's own annual totals, which count all procurement, large
+            and small. That rise was not a steady climb: nearly all of it arrived in 2020 and 2021, and the UN's total
+            has fallen since. <a href="https://github.com/NakoUA/un-russia-procurement#how-the-uns-own-total-moved-year-by-year"
+              target="_blank" rel="noopener">The year-by-year figures are in the README</a>.</p>
+          <p><b>Every column is a floor.</b> Only contracts at or above $30,000 are published at source. What the UN
+            bought below that line is invisible here, in every year.</p>
+          <p><b>2025 carries one flaw of its own, and it is not incompleteness.</b> The year is closed: the UN
+            published its annual report for 2025, and this slice was re-checked against the live dashboard on
+            12 September 2026 without a single row having moved since it was taken. What is wrong with 2025 is the
+            source's supplier-country field. That year 10.4% of suppliers appear under more than one country, against
+            0.6% to 3.3% in every other year — so the doubt is not about how complete the column is, but about
+            <b>which rows reached it at all</b>: some may be missing, and some may be here wrongly.</p>
+        </div>
+
+        <p class="src">Source: UN Annual Statistical Report on procurement, supplier-level data 2015–2025, downloaded 20 July 2026. These are contract amounts reported by the
+          buying organization, for contracts at or above $30,000; how the file was assembled and what it cannot
+          show is set out in <a href="https://github.com/NakoUA/un-russia-procurement#readme" target="_blank"
+            rel="noopener">the README</a>.</p>
+
+        <details class="data">
+          <summary>Data table</summary>
+          <div class="tblwrap" id="tbl1"></div>
+        </details>
+      </figure>
+
+      <!-- Figure 2 -->
+      <figure class="fig" id="fig-2">
+        <figcaption>
+          <p class="fig__kicker">Figure 2 · what the money bought</p>
+          <h3 class="fig__title">Two thirds of the contract value was for aircraft. By 2025 the biggest channel is vaccines.</h3>
+          <p class="fig__lede"><b>Helicopters and cargo planes</b> chartered from Russian air carriers for
+            peacekeeping and humanitarian missions: $1.7 billion, or 66% of the total. <b>Grain and flour</b> bought by
+            the World Food Programme: 15%. <b>Pharmaceuticals and vaccines</b>, mostly for UNICEF: 14%. Everything
+            else: 5%.</p>
+          <p class="fig__lede">But the three channels have three different shapes. <b>Aircraft charter</b> died — it
+            ends in 2024 with no rows at all in 2025. <b>Grain</b> never stopped. <b>Pharma</b> nearly vanished in
+            2021–2023 and came back stronger than it was before the war in Ukraine.</p>
+        </figcaption>
+
+        <div class="fig__legend" id="legend2"></div>
+
+        <div class="fig__plot">
+          <svg class="chart" viewBox="0 0 900 440" role="img" aria-labelledby="t2 d2" id="svg2">
+            <title id="t2">Three channels of UN procurement from Russia-registered suppliers, 2015–2025, $ million per
+              year</title>
+            <desc id="d2">Four lines. Aircraft charter falls from 258 million dollars in 2015 to 3 million in 2024, and
+              there are no rows at all for 2025. Grain and flour move between 17 and 77 million with no collapse. Pharma
+              and vaccines rise to 58 million in 2018, fall to 3 million in 2021 and return to 74 million in 2025, when
+              this channel becomes the largest. Everything else stays below 25 million throughout. Exact figures are in
+              the data table below the chart.</desc>
+          </svg>
+          <div class="tip" id="tip2" role="tooltip" aria-hidden="true"></div>
+        </div>
+        <p class="scrollhint">↔ the chart is wider than your screen — drag it sideways, or open the data table below</p>
+
+        <div class="caveat">
+          <p><b>Aircraft charter is a curated list, not a category.</b> In the source the category is broad —
+            “Transportation, Storage, Mail Services”. The $1,697.8 million is payments to thirteen named Russian air
+            carriers, which is our judgement about which suppliers are air carriers, not a field in the file. Read it as
+            “aircraft chartered from these carriers”, not as “the whole transport category”. What fell outside the list
+            sits in “Everything else”.</p>
+          <p><b>A break, not a zero.</b> The aircraft line stops at 2024 because the data holds no 2025 row for any of
+            those carriers. The last point is drawn as a hollow circle. An empty marker means “no records”, which is not
+            the same claim as “no money”.</p>
+          <p><b>One firm can sit in two channels.</b> Abakan Air is an air carrier that has also sold grain to WFP
+            since 2020. Its aviation rows are in aircraft charter and its food rows in grain. That is a real double role,
+            not a splitting error.</p>
+          <p><b>2025 carries one flaw of its own.</b> Not incompleteness — the year is closed, and this slice was
+            re-checked against the live dashboard on 12 September 2026 without a row having moved. It is the source's
+            supplier-country field: in 2025, 10.4% of suppliers appear under more than one country, against 0.6% to
+            3.3% in every other year, so some rows may be missing from this data and some may be here wrongly. The
+            gap is wide enough to absorb a good deal of that — pharma's $73.8m against grain's $16.6m — but it is
+            worth knowing which year is shakiest.</p>
+        </div>
+
+        <p class="src">Source: UN Annual Statistical Report on procurement, supplier-level data 2015–2025, downloaded 20 July 2026. These are contract amounts reported by the
+          buying organization, for contracts at or above $30,000; how the file was assembled and what it cannot
+          show is set out in <a href="https://github.com/NakoUA/un-russia-procurement#readme" target="_blank"
+            rel="noopener">the README</a>.</p>
+
+        <details class="data">
+          <summary>Data table ($ million)</summary>
+          <div class="tblwrap" id="tbl2"></div>
+        </details>
+      </figure>
+
+      <!-- Figure 3 -->
+      <figure class="fig" id="fig-3">
+        <figcaption>
+          <p class="fig__kicker">Figure 3 · who bought</p>
+          <h3 class="fig__title">Three UN agencies account for 95% of the money</h3>
+          <p class="fig__lede">Over these 11 years, 24 UN agencies appear in the data across 3,418 contracts, but
+            almost all of the money runs through three of them: the <b>UN Secretariat</b>, which pays for peacekeeping missions, the
+            <b>World Food Programme</b> and <b>UNICEF</b>. The remaining twenty-one agencies together account for
+            $133 million — about 5%.</p>
+        </figcaption>
+
+        <div class="fig__plot">
+          <svg class="chart" viewBox="0 0 900 296" role="img" aria-labelledby="t3 d3" id="svg3">
+            <title id="t3">Contract value with Russia-registered suppliers by UN agency, 2015–2025</title>
+            <desc id="d3">Four horizontal bars. UN Secretariat 1,462 million dollars, almost entirely aircraft charter
+              for peacekeeping missions. World Food Programme 655 million, aircraft charter and grain. UNICEF
+              321 million, almost entirely vaccines. Twenty-one other agencies together 133 million. All twenty-four
+              agencies are listed in the data table below the chart.</desc>
+          </svg>
+        </div>
+        <p class="scrollhint">↔ the chart is wider than your screen — drag it sideways, or open the data table below</p>
+
+        <div class="caveat">
+          <p><b>“UN Secretariat” is one payer, not one office.</b> It is the accounting entity behind many
+            peacekeeping missions in different countries. A single bar here can cover a dozen operations, and the data
+            does not say which mission a contract served.</p>
+          <p><b>Rows are not contracts.</b> WFP shows 2,185 rows but 1,589 contracts, because a contract split across
+            several categories appears as several rows. Counting rows would overstate WFP's contracts by a third.</p>
+          <p><b>Every bar is a floor</b> — contracts below $30,000 are not published at source, so each agency may
+            have bought more than is shown.</p>
+        </div>
+
+        <p class="src">Source: UN Annual Statistical Report on procurement, supplier-level data 2015–2025, downloaded 20 July 2026. These are contract amounts reported by the
+          buying organization, for contracts at or above $30,000; how the file was assembled and what it cannot
+          show is set out in <a href="https://github.com/NakoUA/un-russia-procurement#readme" target="_blank"
+            rel="noopener">the README</a>.</p>
+
+        <details class="data">
+          <summary>Data table — all 24 agencies</summary>
+          <div class="tblwrap" id="tbl3"></div>
+        </details>
+      </figure>
+    </section>
+
+    <!-- Next part goes here, above the dataset section. -->
+
+    <!-- Dataset -->
+    <section class="dataset" id="dataset">
+      <h2>The data behind these charts</h2>
+
+      <p>One flat file: <b>4,110 rows</b> covering 2015–2025, one row per contract line. It is the same slice the
+        charts on this page are built from.</p>
+
+      <p>The full logic behind this file — how it was built, what was measured and every caveat that follows
+        from it — is set out in <a href="https://github.com/NakoUA/un-russia-procurement#readme" target="_blank" rel="noopener">the README</a>. What is below is the
+        short version: open a drawer to read it here.</p>
+
+      <p class="dataset__acts">
+        <a class="btn" href="data/russia-suppliers_2015-2025.csv" download>Download the CSV <span>· 530 KB</span></a>
+        <a class="btn-ghost" href="https://lite.datasette.io/?csv=https://nakoua.github.io/un-russia-procurement/data/russia-suppliers_2015-2025.csv" target="_blank" rel="noopener">Explore the data in your browser</a>
+      </p>
+
+      <div class="explore">
+        <p><b>Datasette Lite</b> opens this same file as a searchable table — sort by
+          value, filter by year, agency or category, or write SQL against it — with nothing to install and nothing to
+          download. It loads the CSV from this repository and does all the work inside your own browser; no copy of
+          the data is sent anywhere.</p>
+      </div>
+
+      <div class="drawers">
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5V20"/><path d="M7.5 20h9"/><path d="M3.5 8.8h17"/><path d="M12 5.5 3.9 8.5"/><path d="m12 5.5 8.1 3"/><path d="M1.2 14.2 3.9 8.5l2.7 5.7a2.9 2.9 0 0 1-5.4 0Z"/><path d="m17.4 14.2 2.7-5.7 2.7 5.7a2.9 2.9 0 0 1-5.4 0Z"/></svg><span>Before you count: four caveats that change the totals</span></summary>
+          <div class="drawer__body">
+            <p><b>Before you count.</b> One row is not one contract — there are 4,110 rows but 3,418 contracts,
+              and counting rows overstates contracts by about 20%; group by <code>reference</code> first. Supplier names are
+              not standardised — 346 distinct spellings, which consolidate to roughly 296 groups, so a search by name will
+              silently miss rows. In 2025 the source's country field broke — 10.4% of suppliers appear under more than one
+              country, against 0.6–3.3% in every other year — so rows may be missing here or present wrongly. And every total is a floor,
+              because only contracts at or above $30,000 are published at source.
+                    <a href="https://github.com/NakoUA/un-russia-procurement#four-things-to-know-before-you-count"
+                       target="_blank" rel="noopener">All four caveats
+                      in full, with the measurements behind them →</a></p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2.8h7.2L19 8.6V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.8a1 1 0 0 1 1-1Z"/><path d="M13.2 2.8v5.8H19"/><path d="M8.5 13h7"/><path d="M8.5 17h7"/></svg><span>What is in the file: 4,110 rows, seven columns, one of them empty</span></summary>
+          <div class="drawer__body">
+            <p>It has seven columns, but <b>one of them is empty of meaning</b>: <code>supplier_country</code> reads
+                    <code>Russian Federation</code> in all 4,110 rows, because that is how the slice was defined. So there are six
+                      real dimensions — year (11), paying agency (24), supplier (346 spellings), category (47), value in US dollars,
+                      and contract reference (3,418).</p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.4 2.8H4.6a1.8 1.8 0 0 0-1.8 1.8v7.8a2 2 0 0 0 .6 1.4l7.2 7.2a2 2 0 0 0 2.8 0l6.6-6.6a2 2 0 0 0 0-2.8L13.8 3.4a2 2 0 0 0-1.4-.6Z"/><circle cx="7.6" cy="7.6" r="1.6"/></svg><span>Supplier names: 346 spellings, but fewer firms</span></summary>
+          <div class="drawer__body">
+            <p><b>The UN is not consistent in its own service labels.</b> Where a supplier is not named, this file carries
+              five different strings for it — <code>NAME WITHHELD FOR PRIVACY REASONS</code>,
+                    <code>NAME WITHHELD FOR SECURITY REASONS</code>, <code>UNSPECIFIED SUPPLIER</code>,
+                    <code>INDIVIDUAL SUPPLIER</code> and <code>INDIVIDUAL SERVICE CONTRACTOR</code> — together $183.3 million
+                      across 208 rows. Filter on one of them and you miss the other four.</p>
+
+            <p><b>346 is a count of spellings, not of firms.</b> The same company appears in this file under several
+              different strings, so the number of distinct suppliers is smaller — but by how much, nobody can say exactly.
+              Consolidating the spellings gives roughly <b>296 groups</b>, and that figure is a <b>ceiling, not a tally</b>:
+              the true number of firms is no higher than 296 and otherwise unknown. Four of those 296 name nobody at all, so
+              named suppliers number <b>292 at most</b>.</p>
+
+            <p>The consolidation works in two layers. A strict mechanical rule merges only spellings that become identical
+              once quotes, commas and legal forms are stripped, taking 346 down to 309. Thirty hand-written patterns then
+              finish what the rule could not — a name truncated at about 34 characters, a different legal form, a different
+              transliteration — taking 309 to 296. Those patterns were written for the large firms at the top of the table;
+              the tail of 266 groups was never reviewed by hand, so small suppliers scattered across spellings are almost
+              certainly still counted more than once. That is why the figure is a ceiling.</p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4"/><path d="M12 2.8c2.5 2.7 3.9 5.9 3.9 9.2S14.5 18.5 12 21.2c-2.5-2.7-3.9-5.9-3.9-9.2S9.5 5.5 12 2.8Z"/></svg><span>What “Russia” means here: registration, not ownership</span></summary>
+          <div class="drawer__body">
+            <p><b>“Russia” here means the country of registration, and nothing else.</b> The field this slice is built on
+              records where a supplier is registered — not who owns it, not where its money goes, not who controls it. Two
+              consequences run in opposite directions, and both matter. A company registered in the Russian Federation may
+              be foreign-owned. And a Russian-owned company registered anywhere else — Cyprus, the UAE, Kazakhstan, Turkey —
+                    <b>does not appear in this file at all</b>, however Russian it is in substance. Nothing here is evidence about
+                      ownership, and the total is not a measure of money reaching Russian owners.</p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.6 4.2h2.6l2.7 11.1h9.6l2.1-8.2H6.1"/><circle cx="9.4" cy="19.4" r="1.5"/><circle cx="16.8" cy="19.4" r="1.5"/></svg><span>What the file does not say: which office bought, and who for</span></summary>
+          <div class="drawer__body">
+            <p><b>The paying agency is named, but never the office.</b> The organization column holds 24 values, and almost
+              every one of them is a whole organization — <code>UNDP</code>, <code>WFP</code>, <code>UNICEF</code>,
+                    <code>UN Secretariat</code>. Three name a duty station or a regional commission (<code>UNOG</code>,
+                    <code>UNOV</code>, <code>ESCAP</code>, 23 rows between them); none is a country office. When a row says
+                      UNDP, there is no way to tell from this data whether the buyer was the country office in Kyiv, the one in
+                      Moscow, a regional hub or New York.</p>
+
+            <p><b>And the other end of the chain is missing too.</b> There is no project, no programme, no mission and no
+              recipient country in this file. So each row leaves both ends unknown: which part of the agency bought, and
+              who the purchase was for. “UNDP · Russian Federation” means UNDP paid a supplier registered in Russia. It does
+              not mean UNDP was buying for Russia. UNICEF bought $320.1m of pharmaceuticals, contraceptives and vaccines
+              from Russia-registered suppliers over these years, and where any of it went is not recorded here. Any claim
+              about destination has to come from a source outside this dataset.</p>
+
+            <p><b>The data carries a year, not a month.</b> That is enough to say what happened in which year, and not
+              enough to say that a payment followed any particular event. Any claim of sequence — that something happened
+              because of something else — needs a source outside this file.</p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M13.4 2.9 10 8.2l4.1 2.4-3.6 3.9 2.4 1.9-1.6 4.7"/></svg><span>The 2025 break in the source’s country field</span></summary>
+          <div class="drawer__body">
+            <p><b>The 2025 break was checked at contract level, and it is the source's.</b> A contract cannot have
+              several supplier countries, yet in 2025 5,679 contracts do, against between zero and 46 in every earlier
+              year. The same count on the raw downloads, before anything of ours was assembled, gives the same numbers, so
+              our own handling did not cause it. In this file it reaches 18 of the 134 rows for 2025, $9.7m, and five of
+              those name a supplier that does not look Russian. The full working, with the tables, is in the
+                    <a href="https://github.com/NakoUA/un-russia-procurement#what-broke-in-2025-and-how-much-of-this-file-it-touches"
+                       target="_blank" rel="noopener">README</a>.</p>
+          </div>
+        </details>
+        <details class="drawer">
+          <summary><svg class="drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.2" ry="3.1"/><path d="M4.8 6v5c0 1.7 3.2 3.1 7.2 3.1s7.2-1.4 7.2-3.1V6"/><path d="M4.8 11v5c0 1.7 3.2 3.1 7.2 3.1s7.2-1.4 7.2-3.1v-5"/></svg><span>How much of UN procurement is in this file</span></summary>
+          <div class="drawer__body">
+            <p><b>How much of UN procurement is in this file.</b> Not all of it, and the gap is large enough to matter.
+              The UN's own Annual Statistical Report counts <b>every</b> purchase its organizations make. The dashboard
+              this file comes from carries only contracts at or above $30,000. Over 2015–2025 the dashboard therefore
+              holds <b>19.2% less</b> money than the report — $199.8 billion against $247.4 billion.</p>
+
+            <details class="data">
+              <summary>The UN's own annual totals, against what the dashboard carries</summary>
+              <div class="tblwrap" id="tblcov"></div>
+            </details>
+
+            <p>Two different things make up that gap, and only one of them is the threshold.</p>
+
+            <p><b>The $30,000 threshold</b> accounts for the steady part. In eight of the eleven years the dashboard sits
+              between 82% and 91% of the report — that missing tenth to fifth is the UN's small purchases, which are
+              never published supplier by supplier. Leaving out 2021–2023, the shortfall is <b>15.2%</b> and moves only
+              between 9.5% and 17.8%.</p>
+
+            <p><b>2021–2023 are different, and the UN says why.</b> In those years the shortfall jumps to 27.2%, because
+              COVID-19 vaccine procurement was taken out of the detailed publication altogether. The 2021 report states
+              it plainly: the detailed information “cannot be published in the report or dashboards for confidentiality
+              reasons”. The money is inside the annual totals; it is not in the dashboard, and so it is not in this file.</p>
+
+            <p><b>The report's own figures barely move.</b> We read the same series out of all eleven editions of the
+              report, 2015 through 2025: a year, once published, is restated the same way edition after edition — 2015
+              appears in all eleven as the identical $17,575 million. The only exception is small and unexplained: the 2020
+              and 2021 editions put 2016–2019 between $2m and $10m higher than every other edition, before and after.
+              That is 0.01% to 0.06% of those years, and we do not know what caused it.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="made">
+        <p><b>How this was made.</b> The analysis behind this dataset was done in Claude Code with a set of Agentic
+          Skills written for investigative work: deterministic tools that seal a corpus, keep a ledger of candidate
+          findings, assemble the records behind each one, and recheck every derived figure against its source tables.
+          <a href="https://github.com/comp-journalism/aaijc-workflows-release/tree/main/submissions/registry-nako"
+            target="_blank" rel="noopener">Nine of them are published</a> under an MIT licence, as a submission to
+          <a href="https://generative-ai-newsroom.com/announcing-the-winners-of-the-agentic-ai-investigative-challenge-76f119cc35ca"
+            target="_blank" rel="noopener">the Agentic Investigation Challenge</a>. They were built for a different
+            corpus and are still being developed; this one is among the datasets they are tested against.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap site-foot__row">
+      <p class="site-foot__note">More parts will be added to this page as the series continues; each keeps its own
+        charts, caveats and data tables.</p>
+      <p class="social">
+        <a href="https://github.com/NakoUA" target="_blank" rel="noopener" aria-label="Nako on GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.221-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.911 1.23 3.221 0 4.609-2.805 5.625-5.475 5.921.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/nataliia-kobylchak" target="_blank" rel="noopener"
+          aria-label="Nataliia Kobylchak on LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+    var NS = 'http://www.w3.org/2000/svg';
+    var YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+
+    function maker(svg) {
+      return function el(tag, attrs, text) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in attrs) n.setAttribute(k, attrs[k]);
+        if (text != null) n.textContent = text;
+        svg.appendChild(n);
+        return n;
+      };
+    }
+    function path(pts) {
+      return 'M' + pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join('L');
+    }
+    function f1(v) { return v == null ? '—' : v.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+    function f3(v) { return v == null ? '—' : v.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }); }
+    function f0(v) { return v == null ? '—' : Math.round(v).toLocaleString('en-US'); }
+
+      // Hover layer: one column per year.
+    function hoverColumns(svg, tip, geom, render) {
+      var guide = maker(svg)('line', {
+        x1: 0, y1: geom.y0, x2: 0, y2: geom.y1, stroke: '#1E283A',
+        'stroke-width': 1, 'stroke-opacity': 0, 'stroke-dasharray': '2 3'
+      });
+      var el = maker(svg);
+      YEARS.forEach(function (yr, i) {
+        var body = render(i);
+        var r = el('rect', {
+          'class': 'hit', x: geom.X(i) - geom.colW / 2, y: geom.hitTop, width: geom.colW,
+          height: geom.hitBottom - geom.hitTop, tabindex: 0, role: 'button', 'aria-label': body.label
+        });
+        function show() {
+          guide.setAttribute('x1', geom.X(i));
+          guide.setAttribute('x2', geom.X(i));
+          guide.setAttribute('stroke-opacity', .35);
+          tip.innerHTML = body.html;
+          tip.dataset.open = '1';
+          tip.setAttribute('aria-hidden', 'false');
+          var box = svg.getBoundingClientRect();
+          var k = box.width / geom.W;
+          tip.style.left = Math.min(Math.max(geom.X(i) * k - 112, 0), Math.max(box.width - 238, 0)) + 'px';
+          tip.style.top = (geom.tipTop * k + 8) + 'px';
+        }
+        function hide() {
+          guide.setAttribute('stroke-opacity', 0);
+          tip.dataset.open = '0';
+          tip.setAttribute('aria-hidden', 'true');
+        }
+        r.addEventListener('mouseenter', show);
+        r.addEventListener('focus', show);
+        r.addEventListener('mouseleave', hide);
+        r.addEventListener('blur', hide);
+      });
+    }
+
+    // Figure 1 — money (columns) and share (line), two panels, one year scale.
+    (function () {
+      var RU_MUSD = [366.742, 328.631, 300.137, 318.982, 286.015, 263.897, 230.718, 204.365, 74.761, 103.079, 93.37];
+      var RU_SHARE_PCT = [2.306, 2.185, 1.89, 2.007, 1.749, 1.417, 1.093, 0.948, 0.402, 0.48, 0.482];
+      var RU_ROWS = [340, 224, 430, 584, 586, 552, 521, 486, 109, 144, 134];
+      var RU_CONTRACTS = [284, 211, 389, 497, 466, 410, 403, 383, 98, 144, 133];
+      var ASR_TOTAL_MUSD = [17575, 17713, 18623, 18785, 19893, 22338, 29595, 29587, 24929, 25662, 22709];
+      var TOTAL_MUSD = 2570.697, TOTAL_ROWS = 4110, TOTAL_CONTRACTS = 3418;
+
+      var svg = document.getElementById('svg1'), el = maker(svg);
+      var W = 900, x0 = 56, x1 = 876;
+      var slot = (x1 - x0) / YEARS.length;
+      function X(i) { return x0 + slot * (i + 0.5); }
+
+      // Panel A — columns
+      var yA0 = 34, yA1 = 272, YMAX_A = 400, BAR_W = 32;
+      function YA(v) { return yA1 - v / YMAX_A * (yA1 - yA0); }
+      el('text', { x: x0, y: 18, 'class': 'panel' }, 'Contract value with Russia-registered suppliers, $ million');
+      [0, 100, 200, 300, 400].forEach(function (t) {
+        el('line', { x1: x0, y1: YA(t), x2: x1, y2: YA(t), stroke: t === 0 ? '#9CA3AF' : '#E5E7EB', 'stroke-width': 1 });
+        el('text', { x: x0 - 10, y: YA(t) + 4, 'class': 'ax', 'text-anchor': 'end' }, t.toLocaleString('en-US'));
+      });
+      function barPathV(cx, top, bottom, w, r) {
+        var l = cx - w / 2, rt = cx + w / 2;
+        return 'M' + l + ',' + bottom + 'V' + (top + r) + 'Q' + l + ',' + top + ' ' + (l + r) + ',' + top
+          + 'H' + (rt - r) + 'Q' + rt + ',' + top + ' ' + rt + ',' + (top + r) + 'V' + bottom + 'Z';
+      }
+      RU_MUSD.forEach(function (v, i) {
+        el('path', { d: barPathV(X(i), YA(v), yA1, BAR_W, 3), fill: '#1E283A' });
+      });
+      [0, 7, 8, 9, 10].forEach(function (i) {
+        el('text', { x: X(i), y: YA(RU_MUSD[i]) - 7, 'class': 'valuelabel', 'text-anchor': 'middle', fill: '#1E283A' }, f0(RU_MUSD[i]));
+      });
+      YEARS.forEach(function (y, i) { el('text', { x: X(i), y: yA1 + 17, 'class': 'ax', 'text-anchor': 'middle' }, y); });
+
+      el('text', { x: x1, y: 56, 'class': 'note', 'text-anchor': 'end' }, 'Meanwhile, total UN procurement');
+      el('text', { x: x1, y: 73, 'class': 'note', 'text-anchor': 'end' }, 'grew 29% from 2015 to 2025');
+      el('text', { x: x1, y: 90, 'class': 'note-soft', 'text-anchor': 'end' }, "UN's own annual totals: $17.6bn → $22.7bn");
+
+      // Panel B — share
+      var yB0 = 350, yB1 = 466, YMAX_B = 2.8;
+      function YB(v) { return yB1 - v / YMAX_B * (yB1 - yB0); }
+      el('text', { x: x0, y: 334, 'class': 'panel' }, "Russia's share of all large UN contracts, %");
+      [0, 1, 2].forEach(function (t) {
+        el('line', { x1: x0, y1: YB(t), x2: x1, y2: YB(t), stroke: t === 0 ? '#9CA3AF' : '#E5E7EB', 'stroke-width': 1 });
+        el('text', { x: x0 - 10, y: YB(t) + 4, 'class': 'ax', 'text-anchor': 'end' }, t === 0 ? '0' : t + '%');
+      });
+      el('path', {
+        d: path(RU_SHARE_PCT.map(function (v, i) { return [X(i), YB(v)]; })),
+        fill: 'none', stroke: '#1E283A', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+      });
+      RU_SHARE_PCT.forEach(function (v, i) {
+        el('circle', { cx: X(i), cy: YB(v), r: 4.5, fill: '#1E283A', stroke: '#FFFFFF', 'stroke-width': 2 });
+      });
+      el('text', { x: X(0), y: YB(RU_SHARE_PCT[0]) - 11, 'class': 'valuelabel', 'text-anchor': 'middle', fill: '#1E283A' }, '2.3%');
+      el('text', { x: X(10), y: YB(RU_SHARE_PCT[10]) - 11, 'class': 'valuelabel', 'text-anchor': 'middle', fill: '#1E283A' }, '0.5%');
+      YEARS.forEach(function (y, i) { el('text', { x: X(i), y: yB1 + 17, 'class': 'ax', 'text-anchor': 'middle' }, y); });
+
+      hoverColumns(svg, document.getElementById('tip1'),
+        { W: W, X: X, colW: slot, y0: yA0, y1: yB1, hitTop: yA0, hitBottom: yB1, tipTop: yA0 },
+        function (i) {
+          var yr = YEARS[i];
+          return {
+            label: yr + ': ' + f1(RU_MUSD[i]) + ' million dollars, ' + RU_SHARE_PCT[i].toFixed(2)
+              + ' per cent of all large UN contracts, ' + RU_CONTRACTS[i] + ' contracts',
+            html: '<div class="tip__y">' + yr + '</div>'
+              + '<div class="tip__r"><span>Contract value</span><span>$' + f3(RU_MUSD[i]) + 'm</span></div>'
+              + '<div class="tip__r"><span>Share of large contracts</span><span>' + RU_SHARE_PCT[i].toFixed(3) + '%</span></div>'
+              + '<div class="tip__r"><span>Contracts</span><span>' + RU_CONTRACTS[i].toLocaleString('en-US') + '</span></div>'
+              + '<div class="tip__r"><span>Rows</span><span>' + RU_ROWS[i].toLocaleString('en-US') + '</span></div>'
+              + '<div class="tip__d">all UN procurement that year: '
+              + '$' + (ASR_TOTAL_MUSD[i] / 1000).toFixed(1) + 'bn</div>'
+          };
+        });
+
+      document.getElementById('tbl1').innerHTML =
+        '<table><thead><tr><th>Year</th><th>Contract value, $m</th><th>Share of large contracts</th>'
+        + '<th>Contracts</th><th>Rows</th><th>All UN procurement, $m</th></tr></thead><tbody>'
+        + YEARS.map(function (y, i) {
+          return '<tr><td>' + y + '</td><td>' + f3(RU_MUSD[i]) + '</td><td>'
+            + RU_SHARE_PCT[i].toFixed(3) + '%</td><td>' + RU_CONTRACTS[i].toLocaleString('en-US') + '</td><td>'
+            + RU_ROWS[i].toLocaleString('en-US') + '</td><td>'
+            + (ASR_TOTAL_MUSD[i] == null ? '—' : ASR_TOTAL_MUSD[i].toLocaleString('en-US')) + '</td></tr>';
+        }).join('')
+        + '</tbody><tfoot><tr><td>2015–2025</td><td>' + f3(TOTAL_MUSD) + '</td><td>—</td><td>'
+        + TOTAL_CONTRACTS.toLocaleString('en-US') + '</td><td>' + TOTAL_ROWS.toLocaleString('en-US')
+        + '</td><td>—</td></tr></tfoot></table>'
+        + '<p class="tblnote">The last column is the UN’s own published total for all its procurement that year, '
+        + 'large and small — a different measure from the share column, which counts only large contracts. Contract value, '
+        + 'contracts and rows come from the file published on this page; the share column and the last column do not. '
+        + 'These are the records as they stood on 20 July 2026, re-checked against the live dashboard on '
+        + '12 September 2026.</p>';
+    })();
+
+    // Figure 2 — three channels over time. null means no row in the data, not a zero.
+    (function () {
+      var SERIES = [
+        {
+          key: 'avia', name: 'Aircraft charter', color: '#1E283A', shape: 'circle', width: 2,
+          total: 1697.815, share: '66.0%',
+          vals: [257.569, 241.205, 237.701, 227.213, 213.437, 179.532, 164.287, 134.944, 38.987, 2.939, null]
+        },
+        {
+          key: 'food', name: 'Grain and flour', color: '#6B7280', shape: 'square', width: 2,
+          total: 391.252, share: '15.2%',
+          vals: [76.623, 59.902, 19.463, 20.346, 20.571, 19.264, 39.146, 52.784, 26.642, 39.926, 16.586]
+        },
+        {
+          key: 'pharma', name: 'Pharma and vaccines', color: '#DC2626', shape: 'triangle', width: 2.5,
+          total: 357.342, share: '13.9%',
+          vals: [16.428, 17.284, 31.564, 58.204, 42.05, 49.428, 2.772, 5.317, 4.401, 56.123, 73.771]
+        },
+        {
+          key: 'rest', name: 'Everything else', color: '#9CA3AF', shape: 'none', width: 0.75, dash: '5 4',
+          total: 124.289, share: '4.8%',
+          vals: [16.122, 10.24, 11.41, 13.219, 9.957, 15.673, 24.512, 11.32, 4.73, 4.092, 3.013]
+        }
+      ];
+      var GRAND = 2570.697;
+
+      var svg = document.getElementById('svg2'), el = maker(svg);
+      var W = 900, H = 440, PAD = { t: 30, r: 118, b: 56, l: 58 };
+      var x0 = PAD.l, x1 = W - PAD.r, y0 = PAD.t, y1 = H - PAD.b;
+      var YMAX = 270, TICKS = [0, 50, 100, 150, 200, 250];
+      function X(i) { return x0 + i * (x1 - x0) / (YEARS.length - 1); }
+      function Y(v) { return y1 - v / YMAX * (y1 - y0); }
+
+      TICKS.forEach(function (t) {
+        el('line', { x1: x0, y1: Y(t), x2: x1, y2: Y(t), stroke: t === 0 ? '#9CA3AF' : '#E5E7EB', 'stroke-width': 1 });
+        el('text', { x: x0 - 10, y: Y(t) + 4, 'class': 'ax', 'text-anchor': 'end' }, t.toLocaleString('en-US'));
+      });
+      el('text', { x: x0 - 10, y: y0 - 12, 'class': 'ax-unit', 'text-anchor': 'end' }, '$m');
+      YEARS.forEach(function (y, i) { el('text', { x: X(i), y: y1 + 20, 'class': 'ax', 'text-anchor': 'middle' }, y); });
+
+      function marker(shape, cx, cy, color) {
+        if (shape === 'none') return;
+        if (shape === 'circle') el('circle', { cx: cx, cy: cy, r: 4.5, fill: color, stroke: '#FFFFFF', 'stroke-width': 2 });
+        else if (shape === 'square') el('rect', { x: cx - 4, y: cy - 4, width: 8, height: 8, fill: color, stroke: '#FFFFFF', 'stroke-width': 2 });
+        else el('path', {
+          d: 'M' + cx + ',' + (cy - 5.2) + 'L' + (cx + 4.8) + ',' + (cy + 3.4) + 'L' + (cx - 4.8) + ',' + (cy + 3.4) + 'Z',
+          fill: color, stroke: '#FFFFFF', 'stroke-width': 2, 'stroke-linejoin': 'round'
+        });
+      }
+      SERIES.forEach(function (s) {
+        var pts = [];
+        s.vals.forEach(function (v, i) { if (v != null) pts.push([X(i), Y(v)]); });
+        if (pts.length > 1) el('path', {
+          d: path(pts), fill: 'none', stroke: s.color, 'stroke-width': s.width,
+          'stroke-dasharray': s.dash || 'none', 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+        });
+        s.vals.forEach(function (v, i) { if (v != null) marker(s.shape, X(i), Y(v), s.color); });
+      });
+
+      // Last aircraft point is a hollow circle: no rows after this year.
+      var avia = SERIES[0];
+      var iLast = avia.vals.reduce(function (a, v, i) { return v == null ? a : i; }, 0);
+      el('circle', { cx: X(iLast), cy: Y(avia.vals[iLast]), r: 6, fill: '#FFFFFF', stroke: avia.color, 'stroke-width': 2 });
+
+      el('text', { x: X(1) + 10, y: Y(241.205) - 12, 'class': 'serieslabel', fill: '#1E283A' }, 'Aircraft charter');
+      el('text', { x: X(0) + 6, y: Y(76.623) - 14, 'class': 'serieslabel', fill: '#6B7280' }, 'Grain and flour');
+      el('text', { x: X(3), y: Y(58.204) - 16, 'class': 'serieslabel', fill: '#DC2626', 'text-anchor': 'middle' }, 'Pharma and vaccines');
+      el('text', { x: X(0) + 6, y: Y(16.122) - 9, 'class': 'serieslabel sm', fill: '#9CA3AF' }, 'Everything else');
+
+      el('text', { x: x1 + 110, y: 150, 'class': 'note', 'text-anchor': 'end' }, 'in 2025 vaccines overtake');
+      el('text', { x: x1 + 110, y: 165, 'class': 'note', 'text-anchor': 'end' }, 'every other channel');
+      el('path', {
+        d: 'M' + (x1 + 52) + ',174 L' + (x1 + 14) + ',' + (Y(73.771) - 12).toFixed(1),
+        fill: 'none', stroke: '#DC2626', 'stroke-width': 1, 'stroke-dasharray': '3 3'
+      });
+      el('text', { x: X(10) + 10, y: Y(73.771) + 4, 'class': 'valuelabel', fill: '#DC2626' }, f1(73.771));
+      el('text', { x: X(10) + 10, y: Y(16.586) + 4, 'class': 'valuelabel', fill: '#6B7280' }, f1(16.586));
+
+      function glyph(s) {
+        var mid = '';
+        if (s.shape === 'circle') mid = '<circle cx="10" cy="7" r="4" fill="' + s.color + '" stroke="#fff" stroke-width="1.5"/>';
+        else if (s.shape === 'square') mid = '<rect x="6.5" y="3.5" width="7" height="7" fill="' + s.color + '" stroke="#fff" stroke-width="1.5"/>';
+        else if (s.shape === 'triangle') mid = '<path d="M10,2.2 L15,10.4 L5,10.4 Z" fill="' + s.color + '" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>';
+        return '<svg width="20" height="14" aria-hidden="true"><line x1="0" y1="7" x2="20" y2="7" stroke="'
+          + s.color + '" stroke-width="' + s.width + '"' + (s.dash ? ' stroke-dasharray="5 4"' : '') + '/>' + mid + '</svg>';
+      }
+      document.getElementById('legend2').innerHTML = SERIES.map(function (s) {
+        return '<span class="lg">' + glyph(s) + '<span>' + s.name + ' <b>$' + f1(s.total) + 'm</b> · '
+          + s.share + '</span></span>';
+      }).join('')
+        + '<span class="lg"><svg width="20" height="14" aria-hidden="true">'
+        + '<circle cx="10" cy="7" r="5" fill="#fff" stroke="#1E283A" stroke-width="2"/></svg>'
+        + '<span>no rows in the data after this year</span></span>';
+
+      hoverColumns(svg, document.getElementById('tip2'),
+        { W: W, X: X, colW: (x1 - x0) / (YEARS.length - 1), y0: y0, y1: y1, hitTop: y0, hitBottom: y1, tipTop: y0 },
+        function (i) {
+          var yr = YEARS[i];
+          var alive = SERIES.filter(function (s) { return s.vals[i] != null; });
+          var lead = alive.reduce(function (a, s) { return (a && a.vals[i] >= s.vals[i]) ? a : s; }, null);
+          var sum = alive.reduce(function (a, s) { return a + s.vals[i]; }, 0);
+          return {
+            label: yr + ': largest channel ' + lead.name + ', ' + f1(lead.vals[i]) + ' million dollars out of '
+              + f1(sum) + ' million that year',
+            html: '<div class="tip__y">' + yr + '</div>'
+              + SERIES.map(function (s) {
+                return '<div class="tip__r"><span><i style="background:' + s.color + '"></i>' + s.name + '</span>'
+                  + '<span>' + (s.vals[i] == null ? 'no rows' : f3(s.vals[i])) + '</span></div>';
+              }).join('')
+              + '<div class="tip__d">' + f1(sum) + 'm in total · largest: <span class="tip__lead">'
+              + lead.name.toLowerCase() + '</span></div>'
+          };
+        });
+
+      document.getElementById('tbl2').innerHTML =
+        '<table><thead><tr><th>$ million</th>'
+        + YEARS.map(function (y) { return '<th>' + y + '</th>'; }).join('')
+        + '<th>Total</th><th>Share</th></tr></thead><tbody>'
+        + SERIES.map(function (s) {
+          return '<tr><td>' + s.name + '</td>'
+            + s.vals.map(function (v) { return '<td>' + f3(v) + '</td>'; }).join('')
+            + '<td>' + f3(s.total) + '</td><td>' + s.share + '</td></tr>';
+        }).join('')
+        + '</tbody><tfoot><tr><td>Total for the year</td>'
+        + YEARS.map(function (y, i) {
+          return '<td>' + f1(SERIES.reduce(function (a, s) { return a + (s.vals[i] || 0); }, 0)) + '</td>';
+        }).join('')
+        + '<td>' + f1(GRAND) + '</td><td>100%</td></tr></tfoot></table>'
+        + '<p class="tblnote">An em dash means there is '
+        + 'no row in the data, which is not the same as a zero. “Everything else” merges two source channels — other '
+        + 'transport and logistics ($18.527m) and the remaining 40-plus categories ($105.762m); the cells shown add to '
+        + '124.288 against 124.289 in the source, a 0.001 difference from rounding to three decimals.</p>';
+    })();
+
+    // Figure 3 — who bought.
+    (function () {
+      var AGENCIES = [["UN Secretariat", 862, 856, 1462.37, 56.89], ["WFP", 2185, 1589, 655.047, 25.48],
+      ["UNICEF", 335, 335, 320.71, 12.48], ["FAO", 63, 43, 38.424, 1.49], ["WHO", 176, 174, 21.747, 0.85],
+      ["UNDP", 188, 136, 17.6, 0.68], ["UNHCR", 42, 39, 13.773, 0.54], ["IAEA", 45, 45, 12.464, 0.48],
+      ["UNIDO", 63, 54, 10.003, 0.39], ["ILO", 56, 56, 7.684, 0.3], ["UNOPS", 2, 1, 3.172, 0.12],
+      ["UNAIDS", 23, 23, 2.869, 0.11], ["IOM", 17, 15, 1.652, 0.06], ["UNOV", 15, 14, 1.225, 0.05],
+      ["UNESCO", 12, 12, 0.462, 0.02], ["ITU", 3, 3, 0.438, 0.02], ["ITC", 7, 7, 0.404, 0.02],
+      ["UNOG", 7, 7, 0.224, 0.01], ["UPU", 4, 4, 0.168, 0.01], ["UNFPA", 1, 1, 0.1, 0.0],
+      ["WMO", 1, 1, 0.047, 0.0], ["WIPO", 1, 1, 0.041, 0.0], ["ESCAP", 1, 1, 0.037, 0.0],
+      ["UN Women", 1, 1, 0.035, 0.0]];
+
+      var others = AGENCIES.slice(3);
+      var ROWS = [
+        { name: 'UN Secretariat', what: 'peacekeeping missions · almost entirely aircraft charter', v: 1462.370 },
+        { name: 'World Food Programme', what: 'aircraft charter and grain', v: 655.047 },
+        { name: 'UNICEF', what: 'almost entirely vaccines', v: 320.710 },
+        {
+          name: others.length + ' other agencies',
+          what: others.slice(0, 5).map(function (r) { return r[0]; }).join(', ') + ' and ' + (others.length - 5) + ' more',
+          v: Math.round(others.reduce(function (a, r) { return a + r[3]; }, 0) * 1000) / 1000
+        }
+      ];
+      var TOTAL = AGENCIES.reduce(function (a, r) { return a + r[3]; }, 0);
+
+      var svg = document.getElementById('svg3'), el = maker(svg);
+      var BAR_X = 0, BAR_MAX = 740, BAR_H = 20, ROW_H = 70, TOP = 18;
+      var vmax = ROWS[0].v;
+      function barPathH(x, y, w, h, r) {
+        if (w < r) r = w;
+        return 'M' + x + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r)
+          + 'V' + (y + h - r) + 'Q' + (x + w) + ',' + (y + h) + ' ' + (x + w - r) + ',' + (y + h) + 'H' + x + 'Z';
+      }
+      ROWS.forEach(function (r, i) {
+        var y = TOP + i * ROW_H;
+        el('text', { x: 0, y: y + 13, 'class': 'barname' }, r.name);
+        el('text', { x: 0, y: y + 30, 'class': 'barwhat' }, r.what);
+        var w = r.v / vmax * BAR_MAX;
+        el('path', { d: barPathH(BAR_X, y + 40, w, BAR_H, 3), fill: '#1E283A' });
+        el('text', { x: BAR_X + w + 10, y: y + 40 + BAR_H / 2 + 5, 'class': 'barval' }, '$' + f0(r.v) + 'm');
+      });
+      document.getElementById('tbl3').innerHTML =
+        '<table><thead><tr><th>Agency</th><th>$ million</th><th>Share</th><th>Contracts</th><th>Rows</th>'
+        + '</tr></thead><tbody>'
+        + AGENCIES.map(function (r) {
+          return '<tr><td>' + r[0] + '</td><td>' + f3(r[3]) + '</td><td>' + r[4].toFixed(2) + '%</td><td>'
+            + r[2].toLocaleString('en-US') + '</td><td>' + r[1].toLocaleString('en-US') + '</td></tr>';
+        }).join('')
+        + '</tbody><tfoot><tr><td>24 agencies</td><td>' + f3(Math.round(TOTAL * 1000) / 1000)
+        + '</td><td>100%</td><td>3,418</td><td>4,110</td></tr></tfoot></table>'
+        + '<p class="tblnote">Agency totals add to 2,570.696 against 2,570.697 for the whole slice — a 0.001 difference '
+        + 'from rounding each agency to three decimals. Rows exceed contracts because a contract split across several '
+        + 'categories appears as several rows.</p>';
+    })();
+
+    // Horizontal-scroll hint: shown only if the chart overflows, removed once scrolled.
+    (function () {
+      var plots = Array.prototype.slice.call(document.querySelectorAll('.fig__plot'));
+      function sync() {
+        plots.forEach(function (plot) {
+          var hint = plot.parentNode.querySelector('.scrollhint');
+          if (!hint) return;
+          var overflows = plot.scrollWidth - plot.clientWidth > 4;
+          hint.dataset.show = (overflows && plot.scrollLeft < 8) ? '1' : '0';
+        });
+      }
+      plots.forEach(function (plot) { plot.addEventListener('scroll', sync, { passive: true }); });
+      window.addEventListener('resize', sync);
+      sync();
+    })();
+
+    // Coverage: the UN's own annual totals against what the dashboard carries.
+    (function () {
+      var ROWS = [
+        [2015, 17575, 15902.5], [2016, 17713, 15038.0], [2017, 18623, 15881.0],
+        [2018, 18785, 15890.5], [2019, 19893, 16349.7], [2020, 22338, 18618.8],
+        [2021, 29595, 21107.3], [2022, 29587, 21546.2], [2023, 24929, 18615.5],
+        [2024, 25662, 21487.4], [2025, 22709, 19374.4]
+      ];
+      var COVID = [2021, 2022, 2023];
+      var asrAll = 0, dashAll = 0;
+      ROWS.forEach(function (r) { asrAll += r[1]; dashAll += r[2]; });
+      document.getElementById('tblcov').innerHTML =
+        '<table><thead><tr><th>Year</th><th>UN annual report, $m</th><th>Dashboard, $m</th>'
+        + '<th>In the dashboard</th><th>Missing</th></tr></thead><tbody>'
+        + ROWS.map(function (r) {
+          var cov = r[2] / r[1] * 100;
+          var mark = COVID.indexOf(r[0]) >= 0 ? '*' : '';
+          return '<tr><td>' + r[0] + mark + '</td><td>' + r[1].toLocaleString('en-US') + '</td><td>'
+            + r[2].toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+            + '</td><td>' + cov.toFixed(1) + '%</td><td>' + (100 - cov).toFixed(1) + '%</td></tr>';
+        }).join('')
+        + '</tbody><tfoot><tr><td>2015–2025</td><td>' + asrAll.toLocaleString('en-US') + '</td><td>'
+        + dashAll.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '</td><td>'
+        + (dashAll / asrAll * 100).toFixed(1) + '%</td><td>' + (100 - dashAll / asrAll * 100).toFixed(1)
+        + '%</td></tr></tfoot></table>'
+        + '<p class="tblnote">* In 2021–2023 COVID-19 vaccine procurement was excluded from the detailed '
+        + 'publication for confidentiality reasons, which is why the gap widens in those three years. '
+        + 'Annual totals are the UN\u2019s own, read from Figure 1 of the 2025 Annual Statistical Report; the '
+        + 'dashboard column is the slice published here, taken on 20 July 2026 and re-checked against the live '
+        + 'dashboard on 12 September 2026, when it had not changed by a single row.</p>';
+    })();
+  </script>
+</body>
+
+</html>
