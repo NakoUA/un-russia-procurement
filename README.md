@@ -297,10 +297,12 @@ This repository is mixed, so different parts carry different terms. [LICENSE](LI
 | --- | --- |
 | Source code (`index.html`) | [MIT](LICENSE) |
 | Data (`data/`) | [CC BY 4.0](LICENSE-data.md) |
-| Written text (this README, the prose on the page) | all rights reserved — [NOTICE.md](NOTICE.md) |
+| Written text (this README, the prose on the page) | [CC BY 4.0](NOTICE.md) |
 | Fonts (`fonts/`) | IBM Plex, [SIL OFL 1.1](NOTICE.md) |
 
-The data is deliberately the open part. Take it, recompute these figures, and publish what you find — the credit line is in [LICENSE-data.md](LICENSE-data.md). The written text is journalism and is not covered by the MIT licence: quoting it works as quoting normally does, republishing it does not.
+All of it is open, and that is the point of publishing it this way. Take the data, recompute these figures, and publish what you find; take the text, translate it, republish it. The only condition is that you credit the source — the exact credit lines are in [LICENSE-data.md](LICENSE-data.md) for the data and [NOTICE.md](NOTICE.md) for the text.
+
+One thing that is asked rather than required: the numbers here are hedged for reasons set out above, and they stop being true without those caveats. If you take the figures, take the caveats with them.
 
 ## Corrections
 

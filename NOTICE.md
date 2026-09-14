@@ -5,18 +5,24 @@ This repository is mixed. The MIT licence in `LICENSE` covers **only the code** 
 | What | Terms |
 | --- | --- |
 | Data (`data/`) | CC BY 4.0 — see `LICENSE-data.md` |
-| Written text (README, the prose on the page) | all rights reserved — below |
+| Written text (README, the prose on the page) | CC BY 4.0 — below |
 | Fonts (`fonts/`) | IBM Plex, SIL Open Font License 1.1 — below |
 
-## Written text — all rights reserved
+## Written text — CC BY 4.0
 
 The prose in this repository is journalism: the README, its caveats and method notes, and the text on the published page at <https://nakoua.github.io/un-russia-procurement/>.
 
-Copyright (c) 2026 Nataliia Kobylchak. All rights reserved.
+Copyright (c) 2026 Nataliia Kobylchak, licensed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** licence.
 
-It is **not** covered by the MIT licence and may not be republished without permission. This does not restrict reading it, checking it, quoting it in the ordinary way, or reusing the data it describes — the dataset is deliberately open under CC BY 4.0 so that anyone can recompute these figures and publish what they find. What is reserved is the text itself.
+You may copy, republish, translate and rework this text, including commercially, **provided you credit the author**:
 
-To ask about republication, write to registry.nako[at]gmail.com.
+> Nataliia Kobylchak, <https://nakoua.github.io/un-russia-procurement/>
+
+Full licence text: <https://creativecommons.org/licenses/by/4.0/legalcode>
+
+One request that is **not** a licence condition, so nothing hangs on it: the figures in this text are hedged deliberately. Every total is a floor, because only contracts at or above roughly $30,000 are published at source; 2025 is unreliable in the source's own country field; and these are contract values, not money spent. If you republish or translate, please carry those caveats along with the numbers — stripped of them, the figures say something the data does not support.
+
+Questions: registry.nako[at]gmail.com.
 
 ## Fonts — IBM Plex, SIL Open Font License 1.1
 
