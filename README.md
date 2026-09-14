@@ -289,6 +289,19 @@ Nine of them are published under an MIT licence as part of a submission to [the 
 
 Four of the nine were used directly on the work published here: `pin-corpus` to seal the source files, `track-leads` for the ledger of candidate findings, `build-casefiles` to gather the primary records behind each one, and `verify-derived-numbers` to recheck the arithmetic in this README against the tables underneath it.
 
+## Licensing
+
+This repository is mixed, so different parts carry different terms. [LICENSE](LICENSE) covers the code; everything with other terms is set out in [NOTICE.md](NOTICE.md).
+
+| What | Licence |
+| --- | --- |
+| Source code (`index.html`) | [MIT](LICENSE) |
+| Data (`data/`) | [CC BY 4.0](LICENSE-data.md) |
+| Written text (this README, the prose on the page) | all rights reserved — [NOTICE.md](NOTICE.md) |
+| Fonts (`fonts/`) | IBM Plex, [SIL OFL 1.1](NOTICE.md) |
+
+The data is deliberately the open part. Take it, recompute these figures, and publish what you find — the credit line is in [LICENSE-data.md](LICENSE-data.md). The written text is journalism and is not covered by the MIT licence: quoting it works as quoting normally does, republishing it does not.
+
 ## Corrections
 
 If a number here does not match what you find at source or if there is anything else worth pointing out, we want to know.
