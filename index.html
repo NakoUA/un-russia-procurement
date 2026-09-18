@@ -718,10 +718,18 @@
 
     // Figure 1 — money (columns) and share (line), two panels, one year scale.
     (function () {
-      var RU_MUSD = [366.742, 328.631, 300.137, 318.982, 286.015, 263.897, 230.718, 204.365, 74.761, 103.079, 93.37];
+      <!-- DATA:BEGIN {"csv": "russia_yearly.csv", "var": "RUY", "by": "column", "key": "year", "cols": ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"], "series": {"musd": "value_musd", "rows": "rows_n", "contracts": "contracts"}} -->
+      var RUY = {
+        "musd": [366.742, 328.631, 300.137, 318.982, 286.015, 263.897, 230.718, 204.365, 74.761, 103.079, 93.370],
+        "rows": [340, 224, 430, 584, 586, 552, 521, 486, 109, 144, 134],
+        "contracts": [284, 211, 389, 497, 466, 410, 403, 383, 98, 144, 133]
+      };
+      <!-- DATA:END -->
+      var RU_MUSD = RUY.musd, RU_ROWS = RUY.rows, RU_CONTRACTS = RUY.contracts;
+      // ⚠️ Поза маркерами, бо в таблицях цієї теки цих чисел немає: частка
+      //    рахується від сум ASR, а ті живуть у asr_figure1_editions.
+      //    Їх тримає файл перевірок _verify-checks.json через appears_in.
       var RU_SHARE_PCT = [2.306, 2.185, 1.89, 2.007, 1.749, 1.417, 1.093, 0.948, 0.402, 0.48, 0.482];
-      var RU_ROWS = [340, 224, 430, 584, 586, 552, 521, 486, 109, 144, 134];
-      var RU_CONTRACTS = [284, 211, 389, 497, 466, 410, 403, 383, 98, 144, 133];
       var ASR_TOTAL_MUSD = [17575, 17713, 18623, 18785, 19893, 22338, 29595, 29587, 24929, 25662, 22709];
       var TOTAL_MUSD = 2570.697, TOTAL_ROWS = 4110, TOTAL_CONTRACTS = 3418;
 
